@@ -1,0 +1,25 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: flask_backend_prod
+    restart: always
+    volumes:
+      - prod_db_data:/app/data
+    environment:
+      - DATABASE_URL=sqlite:////app/data/prod.db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    container_name: vite_frontend_prod
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  prod_db_data: # Volume gerenciado pelo Docker para segurança e performance em prod

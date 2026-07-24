@@ -1,0 +1,33 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: flask_backend_dev
+    ports:
+      - "5000:5000"
+    volumes:
+      # Sincroniza código fonte para Hot-Reload do Flask
+      - ./backend:/app
+      # Persiste o banco SQLite fora do contêiner para não resetar no reload
+      - ./data:/app/data
+    environment:
+      - FLASK_ENV=development
+      - DATABASE_URL=sqlite:////app/data/dev.db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: vite_frontend_dev
+    ports:
+      - "5173:5173"
+    volumes:
+      # Sincroniza o código React para Hot-Reload
+      - ./frontend:/app
+      # Evita que o volume sobrescreva os node_modules do container
+      - /app/node_modules
+    environment:
+      - WATCHPACK_POLLING=true
+    depends_on:
+      - backend
