@@ -45,24 +45,3 @@ def login():
         "tipo": usuario.tipo.value,
         "token": token,
     }), 200
-    
-    
-@auth_bp.route('/', methods=['GET'])
-def get_all_users():
-    query = select(Usuario)
-    usuarios = db.session.execute(query).scalars().all()
-    
-    resultado = [
-        {
-            "id": a.id,
-            "nome": a.nome,
-            "email": a.email,
-            "senha": a.senha,
-            "cpf": a.cpf,
-            "tipo": a.tipo.value if a.tipo else None,
-            "convenio": a.convenio,
-            "especialidade": a.especialidade
-        }
-        for a in usuarios
-    ]
-    return jsonify(resultado), 200
